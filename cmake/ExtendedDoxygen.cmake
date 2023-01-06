@@ -125,7 +125,7 @@ function(collect_doxygen_input var_sources var_include_dirs dir)
     foreach(_target IN LISTS _targets)
         # If the target is marked to be included in the documentation
         get_target_property(_gen_doxy ${_target} GENERATE_DOXYGEN)
-        message(DEBUG "Target ${target}")
+        message(DEBUG "Target ${_target}")
         message(DEBUG "  GENERATE_DOXYGEN ${_gen_doxy}")
         if(_gen_doxy)
             # Loop over target's sources
