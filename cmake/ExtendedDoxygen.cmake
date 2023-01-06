@@ -95,3 +95,66 @@ function(collect_sources var target)
 
     set(${var} ${_abs_sources} PARENT_SCOPE)
 endfunction()
+
+# ----------------------------
+# Helper to collect and include directories
+# ----------------------------
+# collect_doxygen_input(VAR_SOURCES VAR_INCLUDE_DIRS DIR)
+#
+# Recursively collect all doxygen-relevant source files and
+# include directories of targets defined at or below the
+# specified directory DIR.
+#
+# Arguments:
+# - VAR_SOURCES:      the output variable holding the list of sources that should be documented
+# - VAR_INCLUDE_DIRS: the output variable holding the list of include directories that should
+#                     be stripped by doxygen
+# - DIR:              the top-most directory to traverse, must be known to CMake
+#                     subdirectories that are known to CMake get traversed recursively
+function(collect_doxygen_input var_sources var_include_dirs dir)
+    list(APPEND CMAKE_MESSAGE_CONTEXT "collect_doxygen_input")
+
+    set(_doxy_sources)
+    set(_doxy_includes)
+
+    # Collect targets
+    collect_targets(_targets "${dir}")
+    message(DEBUG "Processing targets ${_targets}")
+
+    # Loop over targets
+    foreach(_target IN LISTS _targets)
+        # If the target is marked to be included in the documentation
+        get_target_property(_gen_doxy ${_target} GENERATE_DOXYGEN)
+        message(DEBUG "Target ${target}")
+        message(DEBUG "  GENERATE_DOXYGEN ${_gen_doxy}")
+        if(_gen_doxy)
+            # Loop over target's sources
+            collect_sources(_sources ${_target})
+            foreach(_source IN LISTS _sources)
+                set(_gen_doxy_src ON)
+
+                # If not (GENERATE_DOXYGEN defined and false)
+                get_property(_has_doxy_override SOURCE "${_source}" PROPERTY GENERATE_DOXYGEN SET)
+                if(_has_doxy_override)
+                    get_source_file_property(_gen_doxy_src "${_source}" GENERATE_DOXYGEN)
+                endif()
+
+                # Collect source
+                if(_gen_doxy_src)
+                    list(APPEND _doxy_sources "${_source}")
+                endif()
+            endforeach()
+
+            # Loop over targets interface include directories
+            # NOTE: no distinction between install interface vs. build interface so far
+            get_property(_has_inc_interface TARGET ${_target} PROPERTY INTERFACE_INCLUDE_DIRECTORIES SET)
+            if(_has_inc_interface)
+                get_target_property(_includes ${_target} INTERFACE_INCLUDE_DIRECTORIES)
+                list(APPEND _doxy_includes "${_includes}")
+            endif()
+        endif()
+    endforeach()
+
+    set(${var_sources} "${_doxy_sources}" PARENT_SCOPE)
+    set(${var_include_dirs} "${_doxy_includes}" PARENT_SCOPE)
+endfunction()
