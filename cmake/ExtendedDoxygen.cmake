@@ -16,6 +16,22 @@ if(NOT CMP0115_VALUE STREQUAL NEW)
         message(WARNING "CMP0115 not set to NEW. To silence this warning, explicitly set source file extensions and set CMP0115 to NEW. See https://cmake.org/cmake/help/latest/policy/CMP0115.html for details.")
 endif()
 
+# --------------------
+# Check policy CMP0118, see https://cmake.org/cmake/help/latest/policy/CMP0118.html
+# --------------------
+# We want policy CMP0118 to be set to NEW, as this will make our lives easier when collecting sources
+
+if(DEFINED CMAKE_POLICY_DEFAULT_CMP0118)
+    if(NOT CMAKE_POLICY_DEFAULT_CMP0118 STREQUAL NEW)
+        message(WARNING "CMAKE_POLICY_DEFAULT_CMP0118 not set to NEW. To silence this warning, set CMAKE_POLICY_DEFAULT_CMP0118 to NEW. See https://cmake.org/cmake/help/latest/policy/CMP0118.html for details.")
+    endif()
+endif()
+
+cmake_policy(GET CMP0118 CMP0118_VALUE)
+if(NOT CMP0118_VALUE STREQUAL NEW)
+        message(WARNING "CMP0118 not set to NEW. To silence this warning, set CMP0118 to NEW. See https://cmake.org/cmake/help/latest/policy/CMP0118.html for details.")
+endif()
+
 # ---------------------------
 # Properties
 # ---------------------------
