@@ -1,3 +1,21 @@
+cmake_minimum_required(VERSION 3.20)
+
+# --------------------
+# Check policy CMP0115, see https://cmake.org/cmake/help/latest/policy/CMP0115.html
+# --------------------
+# We want policy CMP0115 to be set to NEW, as this will make our lives easier when collecting sources
+
+if(DEFINED CMAKE_POLICY_DEFAULT_CMP0115)
+    if(NOT CMAKE_POLICY_DEFAULT_CMP0115 STREQUAL NEW)
+        message(WARNING "CMAKE_POLICY_DEFAULT_CMP0115 not set to NEW. To silence this warning, explicitly set source file extensions and set CMAKE_POLICY_DEFAULT_CMP0115 to NEW. See https://cmake.org/cmake/help/latest/policy/CMP0115.html for details.")
+    endif()
+endif()
+
+cmake_policy(GET CMP0115 CMP0115_VALUE)
+if(NOT CMP0115_VALUE STREQUAL NEW)
+        message(WARNING "CMP0115 not set to NEW. To silence this warning, explicitly set source file extensions and set CMP0115 to NEW. See https://cmake.org/cmake/help/latest/policy/CMP0115.html for details.")
+endif()
+
 set(DOXYGEN_GENERATE_DOXYGEN OFF)
 
 define_property(
