@@ -98,24 +98,60 @@ function(collect_sources var target)
     get_target_property(_target_source_dir ${target} SOURCE_DIR)
     get_target_property(_target_binary_dir ${target} BINARY_DIR)
 
-    set(_abs_sources)
+    set(_sources_abs)
 
     foreach(_source IN LISTS _sources)
-        if(NOT IS_ABSOLUTE "${_source}")
-            get_source_file_property(_generated "${_source}" GENERATED)
-            if(_generated)
-                string(PREPEND _source "${_target_binary_dir}/")
-            else()
-                string(PREPEND _source "${_target_source_dir}/")
-                # NOTE that we do not catch all possible cases from https://cmake.org/cmake/help/latest/prop_tgt/SOURCES.html
-                # in here. E.g. the relative path could be relative to the binary directory even though GENERATED is not set.
-            endif()
-        endif()
-        list(APPEND _abs_sources "${_source}")
+        absolutify_source("${_source}" "${_target_source_dir}" "$_{target_binary_dir}")
+        list(APPEND _sources_abs "${_source_abs}")
     endforeach()
 
-    set(${var} ${_abs_sources} PARENT_SCOPE)
+    set(${var} ${_sources_abs} PARENT_SCOPE)
 endfunction()
+
+macro(absolutify_source source target_source_dir target_binary_dir)
+    # check for genexes
+    string(GENEX_STRIP "${source}" _no_genex)
+
+    if(source STREQUAL _no_genex)
+        # no genex in source, path can be both relative and absolute
+        cmake_path(IS_ABSOLUTE source _is_absolute)
+
+        if(_is_absolute)
+            # source is absolute path, nothing to do except normalization
+            cmake_path(NORMAL_PATH source OUTPUT_VARIABLE _source_abs)
+        else()
+            # Check for a generated file
+            get_source_file_property(_generated "${source}" GENERATED)
+            if(_generated)
+                # File is generated, hence relative paths are always
+                # relative to the binary directory
+                cmake_path(ABSOLUTE_PATH source BASE_DIRECTORY "${target_binary_dir}" NORMALIZE OUTPUT_VARIABLE _source_abs)
+            else()
+                # the path can be relative both to the target's source and binary directory,
+                # hence we use find_file to search for the file
+                cmake_path(GET source RELATIVE_PART _source_relative)
+                cmake_path(GET source FILENAME _source_filename)
+
+                cmake_path(ABSOLUTE_PATH _source_relative BASE_DIRECTORY "${target_source_dir}" NORMALIZE OUTPUT_VARIABLE _source_source_dir)
+                cmake_path(ABSOLUTE_PATH _source_relative BASE_DIRECTORY "${target_binary_dir}" NORMALIZE OUTPUT_VARIABLE _source_binary_dir)
+
+                find_file(
+                    _source_abs
+                    "${_source_filename}"
+                    PATHS "${_source_source_dir}" "${_source_binary_dir}"
+                    NO_CACHE
+                    REQUIRED
+                    NO_DEFAULT_PATH
+                )
+            endif()
+        endif()
+    else()
+        # there is a genex in source, according to the documentation we
+        # may assume it evaluates to an absolute path
+        # (see https://cmake.org/cmake/help/latest/prop_tgt/SOURCES.html)
+        set(_source_abs "${source}")
+    endif()
+endmacro()
 
 # -----------------------------------------
 # Helper to collect and include directories
