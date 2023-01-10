@@ -16,6 +16,9 @@ if(NOT CMP0115_VALUE STREQUAL NEW)
         message(WARNING "CMP0115 not set to NEW. To silence this warning, explicitly set source file extensions and set CMP0115 to NEW. See https://cmake.org/cmake/help/latest/policy/CMP0115.html for details.")
 endif()
 
+# ---------------------------
+# Properties
+# ---------------------------
 set(DOXYGEN_GENERATE_DOXYGEN OFF)
 
 define_property(
@@ -69,9 +72,9 @@ macro(collect_targets_recursive targets dir)
     list(APPEND ${targets} ${_current_targets})
 endmacro()
 
-# -----------------------------
+# ------------------------------------
 # Helper to collect a target's sources
-# -----------------------------
+# ------------------------------------
 
 # collect_sources(VAR TARGET)
 #
@@ -114,9 +117,10 @@ function(collect_sources var target)
     set(${var} ${_abs_sources} PARENT_SCOPE)
 endfunction()
 
-# ----------------------------
+# -----------------------------------------
 # Helper to collect and include directories
-# ----------------------------
+# -----------------------------------------
+
 # collect_doxygen_input(VAR_SOURCES VAR_INCLUDE_DIRS DIR)
 #
 # Recursively collect all doxygen-relevant source files and
