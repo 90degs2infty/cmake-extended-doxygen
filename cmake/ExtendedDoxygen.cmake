@@ -161,6 +161,9 @@ function(absolutify_source var source target)
             # source is absolute path, nothing to do except normalization
             cmake_path(NORMAL_PATH source OUTPUT_VARIABLE _source_abs)
         else()
+
+            message(WARNING "Relative path detected: ${source}. Consider using absolute paths to silence this warning. For basic use-cases it is sufficient to prepend \"${CMAKE_CURRENT_SOURCE_DIR}\".")
+
             # Check for a generated file
             # Note: the GENERATED property has some known unexpected behaviours and maybe even bugs.
             # See the following for a discussion:
