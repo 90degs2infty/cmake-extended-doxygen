@@ -88,6 +88,31 @@ macro(collect_targets_recursive targets dir)
     list(APPEND ${targets} ${_current_targets})
 endmacro()
 
+# -------------------------------------
+# Helper to check for genexes in a path
+# -------------------------------------
+
+# contains_genex(VAR SOURCE)
+#
+# Check if a given file path SOURCE contains generator expressions
+# and store the result in variable VAR.
+#
+# Arguments:
+# - VAR: the output variable holding the result of the check
+#        ON, iff SOURCE contains a genex
+#        OFF otherwise
+# - SOURCE: the file path to check
+function(contains_genex var source)
+
+    string(GENEX_STRIP "${source}" _no_genex)
+
+    if(source STREQUAL _no_genex)
+        set(${var} OFF PARENT_SCOPE)
+    else()
+        set(${var} ON PARENT_SCOPE)
+    endif()
+endfunction()
+
 # ------------------------------------
 # Helper to collect a target's sources
 # ------------------------------------
@@ -146,9 +171,9 @@ function(absolutify_source var source target)
     set(_source_abs)
 
     # check for genexes
-    string(GENEX_STRIP "${source}" _no_genex)
+    contains_genex(_has_genex "${source}")
 
-    if(NOT source STREQUAL _no_genex)
+    if(_has_genex)
         # there is a genex in source, according to the documentation we
         # may assume it evaluates to an absolute path
         # (see https://cmake.org/cmake/help/latest/prop_tgt/SOURCES.html)
