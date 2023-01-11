@@ -268,10 +268,26 @@ function(collect_doxygen_input var_sources var_include_dirs dir)
             foreach(_source IN LISTS _sources)
                 set(_gen_doxy_src ON)
 
-                # If not (GENERATE_DOXYGEN defined and false)
-                get_property(_has_doxy_override SOURCE "${_source}" PROPERTY GENERATE_DOXYGEN SET)
-                if(_has_doxy_override)
-                    get_source_file_property(_gen_doxy_src "${_source}" GENERATE_DOXYGEN)
+                # NOTE: to my understanding, it is not possible to set source file properties on files
+                # which feature a genex in their path. At least, neither
+                # https://cmake.org/cmake/help/latest/command/set_property.html nor
+                # https://cmake.org/cmake/help/latest/command/set_source_files_properties.html#command:set_source_files_properties
+                # mentions generator expressions.
+                # Hence, we assume that for genex-sources, no source file property is set and the target
+                # property GENERATE_DOXYGEN takes precedence.
+
+                contains_genex(_has_genex "${_source}")
+
+                if(NOT _has_genex)
+
+                    # If not (GENERATE_DOXYGEN defined and false)
+                    #
+                    # Note that we have to query for GENERATE_DOXYGEN from the target's directory scope as otherwise the property
+                    # will not be visible to us. See https://cmake.org/cmake/help/latest/command/set_source_files_properties.html for details.
+                    get_property(_has_doxy_override SOURCE "${_source}" TARGET_DIRECTORY ${_target} PROPERTY GENERATE_DOXYGEN SET)
+                    if(_has_doxy_override)
+                        get_source_file_property(_gen_doxy_src "${_source}" TARGET_DIRECTORY ${_target} GENERATE_DOXYGEN)
+                    endif()
                 endif()
 
                 # Collect source
