@@ -113,6 +113,47 @@ function(contains_genex var source)
     endif()
 endfunction()
 
+# -------------------------------------------------------------
+# Helper to detect generated files specified via relative paths
+# -------------------------------------------------------------
+
+# is_generated(VAR SOURCE TARGET)
+#
+# Check if a given relative file path SOURCE refers to a
+# generated file and store the result in variable VAR.
+# The GENERATED source file property has to be visible from the
+# specified target TARGET's directory, see TARGET_DIRECTORY from
+# https://cmake.org/cmake/help/latest/command/get_source_file_property.html
+# for details.
+#
+# Arguments:
+# - VAR: the output variable holding the result of the check
+# - SOURCE: the file path to check - must be a relative path which is
+#           interpreted relative to the TARGET's binary directory
+# - TARGET: the target indicating the binary directory under which
+#           to look for SOURCE. The GENERATED source file property
+#           has to be visible from this target's directory, see the
+#           above.
+function(is_generated var source target)
+    get_target_property(_target_binary_dir ${target} BINARY_DIR)
+
+    # Note: the GENERATED property has some known unexpected behaviours and maybe even bugs.
+    # See the following for a discussion:
+    #
+    # - https://discourse.cmake.org/t/unexpected-behavior-of-the-generated-source-file-property-and-cmp0118/3821/3
+    # - https://discourse.cmake.org/t/behavior-of-where-cmp0118s-value-is-used-is-ambiguous/4045
+    # - https://gitlab.kitware.com/cmake/cmake/-/issues/18399
+    #
+    # All in all, the current way to query the GENERATED property is to use `get_source_file_property` with
+    # - the absolute path the generated file (the file does not have to exist on disc yet)
+    # - the absolute path to the directory in which the file is introduced to CMake (i.e. the directory in
+    #   which the introducing `CMakeLists.txt` lives)
+
+    cmake_path(ABSOLUTE_PATH source BASE_DIRECTORY "${_target_binary_dir}" NORMALIZE OUTPUT_VARIABLE _generated_candidate)
+    get_source_file_property(_generated "${_generated_candidate}" TARGET_DIRECTORY "${target}" GENERATED)
+    set(${var} "${_generated}" PARENT_SCOPE)
+endfunction()
+
 # ------------------------------------
 # Helper to collect a target's sources
 # ------------------------------------
@@ -190,20 +231,7 @@ function(absolutify_source var source target)
             message(WARNING "Relative path detected: ${source}. Consider using absolute paths to silence this warning. For basic use-cases it is sufficient to prepend \"${CMAKE_CURRENT_SOURCE_DIR}\".")
 
             # Check for a generated file
-            # Note: the GENERATED property has some known unexpected behaviours and maybe even bugs.
-            # See the following for a discussion:
-            #
-            # - https://discourse.cmake.org/t/unexpected-behavior-of-the-generated-source-file-property-and-cmp0118/3821/3
-            # - https://discourse.cmake.org/t/behavior-of-where-cmp0118s-value-is-used-is-ambiguous/4045
-            # - https://gitlab.kitware.com/cmake/cmake/-/issues/18399
-            #
-            # All in all, the current way to query the GENERATED property is to use `get_source_file_property` with
-            # - the absolute path the generated file (the file does not have to exist on disc yet)
-            # - the absolute path to the directory in which the file is introduced to CMake (i.e. the directory in
-            #   which the introducing `CMakeLists.txt` lives)
-
-            cmake_path(ABSOLUTE_PATH source BASE_DIRECTORY "${_target_binary_dir}" NORMALIZE OUTPUT_VARIABLE _generated_candidate)
-            get_source_file_property(_generated "${_generated_candidate}" DIRECTORY "${_target_source_dir}" GENERATED)
+            is_generated(_generated ${source} ${target})
             if(_generated)
                 set(_source_abs "${_generated_candidate}")
             else()
