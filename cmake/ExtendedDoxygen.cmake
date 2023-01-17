@@ -346,3 +346,6 @@ function(collect_doxygen_input var_sources var_include_dirs dir)
     set(${var_sources} "${_doxy_sources}" PARENT_SCOPE)
     set(${var_include_dirs} "${_doxy_includes}" PARENT_SCOPE)
 endfunction()
+
+# Pull in the custom drop-in replacement for doxygen_add_docs
+include(DoxygenAddDocumentation)
