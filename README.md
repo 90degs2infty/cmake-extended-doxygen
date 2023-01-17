@@ -54,3 +54,46 @@ From within the build directory, build the documentation via
 ```bash
 cmake --build . --target Doxygen
 ```
+
+### Per source file `GENERATE_DOXYGEN`
+
+The source file property `GENERATE_DOXYGEN` has to be visible in the parent target's directory scope.
+By default, this is the case if the property is being set in the same `CMakeLists.txt` that introduces the target.
+For more complex source layouts (as recommended by the CMake docs), consider the following example.
+
+Given some library `libfoo` in directory `foo` with the source files living in subdirectory `src`.
+Then set `GENERATE_DOXYGEN` as follows:
+
+```cmake
+# ./foo/CMakeLists.txt
+
+add_library(
+    foo
+)
+
+set_target_properties(
+    foo
+    PROPERTIES
+    GENERATE_DOXYGEN ON
+)
+```
+
+```cmake
+# ./foo/src/CMakeLists.txt
+
+target_sources(
+    foo
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/bar.cpp
+    # ...
+)
+
+set_source_files_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/bar.cpp
+    TARGET_DIRECTORY foo # extend visibility of below property
+    PROPERTIES
+    GENERATE_DOXYGEN OFF
+)
+```
+
+See [set_source_file_properties](https://cmake.org/cmake/help/latest/command/set_source_files_properties.html) for details.
