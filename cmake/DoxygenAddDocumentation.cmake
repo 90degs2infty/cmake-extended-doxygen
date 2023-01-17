@@ -349,8 +349,13 @@ doxygen_add_documentation() for target ${targetName}")
 
     # Prepare doxygen configuration file
     set(_doxyfile_template "${CMAKE_BINARY_DIR}/CMakeDoxyfile.in")
-    set(_target_doxyfile "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.${targetName}")
-    configure_file("${_doxyfile_template}" "${_target_doxyfile}")
+    set(_genex_template "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.genex_in.${targetName}")
+    set(_target_doxyfile "${CMAKE_CURRENT_BINARY_DIR}/Doxyfile.${targetName}.$<CONFIG>")
+    configure_file("${_doxyfile_template}" "${_genex_template}" @ONLY)
+    file(GENERATE
+        OUTPUT "${_target_doxyfile}"
+        INPUT "${_genex_template}"
+    )
 
     unset(_all)
     if(${_args_ALL})
