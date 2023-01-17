@@ -275,6 +275,15 @@ endfunction()
 # - DIR:              the top-most directory to traverse, must be known to CMake
 #                     subdirectories that are known to CMake get traversed recursively
 function(collect_doxygen_input var_sources var_include_dirs dir)
+
+    # Implementation note: for relative paths to work, I might have to switch the order of doing stuff below:
+    # Loop over targets
+    # Loop over targets' sources
+    #   If generate_doxygen
+    #       collect
+    # Loop over collected sources
+    #   absolutify paths
+
     list(APPEND CMAKE_MESSAGE_CONTEXT "collect_doxygen_input")
 
     set(_doxy_sources)
