@@ -1,4 +1,3 @@
-
 # The function doxygen_add_documentation is based on the function doxygen_add_docs
 # from CMake's sources (version 3.25.1).
 # See https://cmake.org/cmake/help/latest/module/FindDoxygen.html for documentation.
@@ -48,7 +47,7 @@
 function(doxygen_add_documentation targetName)
     set(_options ALL USE_STAMP_FILE)
     set(_one_value_args WORKING_DIRECTORY COMMENT)
-    set(_multi_value_args)
+    set(_multi_value_args DEDICATED_SOURCES)
     cmake_parse_arguments(_args
                           "${_options}"
                           "${_one_value_args}"
@@ -69,6 +68,10 @@ function(doxygen_add_documentation targetName)
 directly to the doxygen_add_documentation() command instead.")
     endif()
     set(DOXYGEN_INPUT ${_args_UNPARSED_ARGUMENTS})
+
+    if(_args_DEDICATED_SOURCES)
+        list(APPEND DOXYGEN_INPUT ${_args_DEDICATED_SOURCES})
+    endif()
 
     if(NOT TARGET Doxygen::doxygen)
         message(FATAL_ERROR "Doxygen was not found, needed by \
@@ -245,6 +248,24 @@ doxygen_add_documentation() for target ${targetName}")
         endif()
     endforeach()
 
+    unset(_dedicated_sources)
+    foreach(_item IN LISTS _args_DEDICATED_SOURCES)
+        get_filename_component(_abs_item "${_item}" ABSOLUTE
+                               BASE_DIR "${_args_WORKING_DIRECTORY}")
+        get_source_file_property(_isGenerated "${_abs_item}" GENERATED)
+        if(_isGenerated OR
+           (EXISTS "${_abs_item}" AND
+            NOT IS_DIRECTORY "${_abs_item}" AND
+            NOT IS_SYMLINK "${_abs_item}"))
+            list(APPEND _dedicated_sources "${_abs_item}")
+        elseif(_args_USE_STAMP_FILE)
+            message(FATAL_ERROR "Source does not exist or is not a file:\n"
+                "    ${_abs_item}\n"
+                "Only existing files may be specified when the "
+                "USE_STAMP_FILE option is given.")
+        endif()
+    endforeach()
+
     # Transform known list type options into space separated strings.
     set(_doxygen_list_options
         ABBREVIATE_BRIEF
@@ -378,7 +399,7 @@ doxygen_add_documentation() for target ${targetName}")
         )
         add_custom_target(${targetName} ${_all}
             DEPENDS ${__stamp_file}
-            SOURCES ${_sources}
+            SOURCES ${_dedicated_sources}
         )
         unset(__stamp_file)
     else()
@@ -388,7 +409,7 @@ doxygen_add_documentation() for target ${targetName}")
             WORKING_DIRECTORY "${_args_WORKING_DIRECTORY}"
             DEPENDS "${_target_doxyfile}" ${_sources}
             COMMENT "${_args_COMMENT}"
-            SOURCES ${_sources}
+            SOURCES ${_dedicated_sources}
         )
     endif()
 
