@@ -53,6 +53,7 @@ Now introduce your targets.
 To include targets (i.e. their sources) in the documentation, use one of the following methods:
 
 - Set the variable `DOXYGEN_GENERATE_DOXYGEN` to some value evaluating to `TRUE`.
+  Subsequent targets will all get included in the documentation until `DOXYGEN_GENERATE_DOXYGEN` is set to some value evaluating to `FALSE` again.
 
   ```cmake
   set(DOXYGEN_GENERATE_DOXYGEN ON)
@@ -70,8 +71,7 @@ To include targets (i.e. their sources) in the documentation, use one of the fol
   )
   ```
 
-  Subsequent targets will all get included in the documentation until `DOXYGEN_GENERATE_DOXYGEN` is set to some value evaluating to `FALSE` again.
-- Set the target-property `GENERATE_DOXYGEN` to some value evaluating to `true`.
+- Set the target-property `GENERATE_DOXYGEN` to some value evaluating to `TRUE`.
 
   ```cmake
   add_library(
