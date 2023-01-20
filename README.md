@@ -219,4 +219,15 @@ Once all targets have been set up, the overall algorithm of collecting Doxygen's
 
 ## Known issues
 
-TBA
+### Relative paths
+
+Depending on context, CMake interprets relative paths as relative to the source or binary directory.
+Such paths have to be converted to absolute paths before passing them to Doxygen in order to uniquely identify files.
+
+Part of the conversion depends on the [`GENERATED`](https://cmake.org/cmake/help/latest/prop_sf/GENERATED.html) source file property.
+Due to some unexpected behaviour in CMake, querying this property can break the entire build under certain conditions.
+See [this issue](https://gitlab.kitware.com/cmake/cmake/-/issues/24311) for a detailed description of the unexpected behaviour.
+
+Due to the unexpected behaviour, the integration contained in this repository currently only works with absolute file paths.
+I.e. relative file paths are not allowed in source file paths contained in your `CMakeLists.txt`.
+As this is quite a bummer, please check the above issue and give feedback/upvote the issue.
