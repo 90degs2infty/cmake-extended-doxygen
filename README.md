@@ -4,17 +4,17 @@ A target-based integration of [Doxygen](https://doxygen.nl/) into [CMake](https:
 
 ## Why this integration?
 
-This repository ships a custom integration of Doxygen into CMake build on top of the [default integration shipped with CMake](https://cmake.org/cmake/help/latest/module/FindDoxygen.html).
+This repository ships a custom integration of Doxygen into CMake built on top of the [default integration shipped with CMake](https://cmake.org/cmake/help/latest/module/FindDoxygen.html).
 
 While the default Doxygen integration provides the function [`doxygen_add_docs`](https://cmake.org/cmake/help/latest/module/FindDoxygen.html#command:doxygen_add_docs) to set up a target dedicated to documentation, it does not provide any means to collect Doxygen's input automatically.
-This forces the developer having to manually specify and maintain a list of sources going into documentation as well as a list of include directories to be stripped by Doxygen.
+This forces the developer into having to manually specify and maintain a list of sources going into documentation as well as a list of include directories to be stripped by Doxygen.
 Apart from the maintainance overhead, this also leads to redundancies: after all, the set of source files and include directories are already known to CMake, so there should be a way of leveraging this information when specifying Doxygen's input.
 
 To automate the process setting up Doxygen's input, this repository ships:
 
 - a custom marker property `GENERATE_DOXYGEN` (target and source-file level) to control which source files go into documentation
 - a function `collect_doxygen_input` to automatically populate the list of sources and include directories passed to Doxygen
-- a close-to-drop-in-replacement `doxygen_add_documentation` superseeding `doxygen_add_docs`
+- a close-to-drop-in-replacement `doxygen_add_documentation` replacing `doxygen_add_docs`
 
 ## Usage
 
