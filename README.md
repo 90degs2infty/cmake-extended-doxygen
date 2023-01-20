@@ -206,7 +206,16 @@ The former differs from the latter in the following ways:
 
 ## Implementation details
 
-TBA
+Once all targets have been set up, the overall algorithm of collecting Doxygen's input is the following:
+
+```cmake
+# 1: For all targets defined at or below the specified directory...
+# 2:   ...check, if the `GENERATE_DOCUMENTATION` property evaluates to `TRUE`
+# 3:     If yes: For all source files contained in the target's `SOURCE` property...
+# 4:       ...check, if there is an overriding `GENERATE_DOCUMENTATION` property evaluating to `FALSE`
+# 5:         If no: add the source file to the list of all source files
+# 6:       ...add all directories contained in the target's `INTERFACE_INCLUDE_DIRECTORIES` to the list of all include directories
+```
 
 ## Known issues
 
