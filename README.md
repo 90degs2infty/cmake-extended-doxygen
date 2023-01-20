@@ -204,19 +204,6 @@ The former differs from the latter in the following ways:
   Sources passed this way get passed on to the constructed custom target as `SOURCES`.
   A common use-case is the specification of some `README.md`, which does not contribute code to the code base but gets passed to Doxygen via `DOXYGEN_USE_MDFILE_AS_MAINPAGE`.
 
-## Implementation details
-
-Once all targets have been set up, the overall algorithm of collecting Doxygen's input is the following:
-
-```cmake
-# 1: For all targets defined at or below the specified directory...
-# 2:   ...check, if the `GENERATE_DOCUMENTATION` property evaluates to `TRUE`
-# 3:     If yes: For all source files contained in the target's `SOURCE` property...
-# 4:       ...check, if there is an overriding `GENERATE_DOCUMENTATION` property evaluating to `FALSE`
-# 5:         If no: add the source file to the list of all source files
-# 6:       ...add all directories contained in the target's `INTERFACE_INCLUDE_DIRECTORIES` to the list of all include directories
-```
-
 ## Known issues
 
 ### Relative paths
@@ -231,3 +218,16 @@ See [this issue](https://gitlab.kitware.com/cmake/cmake/-/issues/24311) for a de
 Due to the unexpected behaviour, the integration contained in this repository currently only works with absolute file paths.
 I.e. relative file paths are not allowed in source file paths contained in your `CMakeLists.txt`.
 As this is quite a bummer, please check the above issue and give feedback/upvote the issue.
+
+## Implementation details
+
+Once all targets have been set up, the overall algorithm of collecting Doxygen's input is the following:
+
+```cmake
+# 1: For all targets defined at or below the specified directory...
+# 2:   ...check, if the `GENERATE_DOCUMENTATION` property evaluates to `TRUE`
+# 3:     If yes: For all source files contained in the target's `SOURCE` property...
+# 4:       ...check, if there is an overriding `GENERATE_DOCUMENTATION` property evaluating to `FALSE`
+# 5:         If no: add the source file to the list of all source files
+# 6:       ...add all directories contained in the target's `INTERFACE_INCLUDE_DIRECTORIES` to the list of all include directories
+```
