@@ -20,7 +20,9 @@ To automate the process setting up Doxygen's input, this repository ships:
 
 ### Prerequisites
 
-TBA
+- CMake >= 3.20
+  - Policies [`CMP0115`](https://cmake.org/cmake/help/latest/policy/CMP0015.html) and [`CMP0118`](https://cmake.org/cmake/help/latest/policy/CMP0118.html) have to be set to `NEW`, i.e. source file extensions have to be specified explicitly and the `GENERATED` source file property should be visible from all directories.
+- Doxygen
 
 ### Getting `cmake-extended-doxygen`
 
