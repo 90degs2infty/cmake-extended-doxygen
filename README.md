@@ -45,7 +45,7 @@ list(APPEND CMAKE_MODULE_PATH /home/davids/workspace/cmake-extended-doxygen/cmak
 include(ExtendedDoxygen)
 ```
 
-This introduces a target- and source file property `GENERATE_DOXYGEN`, the former being initialized from the variable `DOXYGEN_GENERATE_DOXYGEN`.
+This introduces a target and source file property `GENERATE_DOXYGEN`, the former being initialized from the variable `DOXYGEN_GENERATE_DOXYGEN`.
 
 ### Adding targets to the documentation
 
@@ -71,7 +71,7 @@ To include targets (i.e. their sources) in the documentation, use one of the fol
   )
   ```
 
-- Set the target-property `GENERATE_DOXYGEN` to some value evaluating to `TRUE`.
+- Set the target property `GENERATE_DOXYGEN` to some value evaluating to `TRUE`.
 
   ```cmake
   add_library(
@@ -88,7 +88,7 @@ To include targets (i.e. their sources) in the documentation, use one of the fol
 
 For more fine-grained control, there is the additional source file property `GENERATE_DOXYGEN`.
 This property can be used to exclude individual files from the documentation while at the same time including the parent target.
-For the source file property to have any effect, the parent target has to have `GENERATE_DOXYGEN` enabled (i.e. with the parent target-property being disabled, a given source file will not get documented irrespective of the source file property's value)!
+For the source file property to have any effect, the parent target has to have `GENERATE_DOXYGEN` enabled (i.e. with the parent target property being disabled, a given source file will not get documented irrespective of the source file property's value)!
 
 ### Introducing the documentation to CMake
 
