@@ -1,5 +1,3 @@
-cmake_minimum_required(VERSION 3.20)
-
 # --------------------
 # Check policy CMP0115, see https://cmake.org/cmake/help/latest/policy/CMP0115.html
 # --------------------
@@ -31,6 +29,13 @@ cmake_policy(GET CMP0118 CMP0118_VALUE)
 if(NOT CMP0118_VALUE STREQUAL NEW)
         message(WARNING "CMP0118 not set to NEW. To silence this warning, set CMP0118 to NEW. See https://cmake.org/cmake/help/latest/policy/CMP0118.html for details.")
 endif()
+
+# -------------------------------------------------
+# Set the expected CMake version alongside policies
+# -------------------------------------------------
+# To query the surrounding policy setting using the GETs above,
+# this call to cmake_minimum_required has to stay below the above GETs.
+cmake_minimum_required(VERSION 3.20)
 
 # ---------------------------
 # Properties
