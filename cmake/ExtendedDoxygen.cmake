@@ -228,7 +228,13 @@ function(absolutify_source var source target)
             cmake_path(NORMAL_PATH source OUTPUT_VARIABLE _source_abs)
         else()
 
-            message(WARNING "Relative path detected: ${source}. Consider using absolute paths to silence this warning. For basic use-cases it is sufficient to prepend \"${CMAKE_CURRENT_SOURCE_DIR}\".")
+            message(
+                WARNING
+                "Relative path detected: ${source}. "
+                "Consider using absolute paths to silence this warning. "
+                "For basic use-cases it is sufficient to prepend \"${CMAKE_CURRENT_SOURCE_DIR}\". "
+                "See https://github.com/90degs2infty/cmake-extended-doxygen#relative-paths for details."
+            )
 
             # Check for a generated file
             is_generated(_generated ${source} ${target})
