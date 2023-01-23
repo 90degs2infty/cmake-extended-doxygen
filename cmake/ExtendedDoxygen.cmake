@@ -359,4 +359,4 @@ function(collect_doxygen_input var_sources var_include_dirs dir)
 endfunction()
 
 # Pull in the custom drop-in replacement for doxygen_add_docs
-include(DoxygenAddDocumentation)
+include("${CMAKE_CURRENT_LIST_DIR}/DoxygenAddDocumentation.cmake")
