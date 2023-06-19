@@ -36,7 +36,7 @@ find_package(Doxygen REQUIRED)
 # Pull in cmake-extended-doxygen
 FetchContent_Declare(
     cmake-extended-doxygen
-    GIT_REPOSITORY git@github.com:90degs2infty/cmake-extended-doxygen.git
+    GIT_REPOSITORY https://github.com/90degs2infty/cmake-extended-doxygen.git
     GIT_TAG main
 )
 FetchContent_MakeAvailable(cmake-extended-doxygen)
