@@ -41,7 +41,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(cmake-extended-doxygen)
 
-list(APPEND CMAKE_MODULE_PATH /home/davids/workspace/cmake-extended-doxygen/cmake)
+list(APPEND CMAKE_MODULE_PATH "${cmake-extended-doxygen_SOURCE_DIR}/cmake")
 include(ExtendedDoxygen)
 ```
 
