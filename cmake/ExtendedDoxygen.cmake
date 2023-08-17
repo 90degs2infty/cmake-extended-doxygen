@@ -44,7 +44,7 @@ endif()
 # -------------------------------------------------
 # To query the surrounding policy setting using the GETs above,
 # this call to cmake_minimum_required has to stay below the above GETs.
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.25)
 
 # ---------------------------
 # Properties
