@@ -44,6 +44,15 @@
 # https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt as
 # well as https://cmake.org/licensing.
 
+#[========================================================================[.rst:
+DoxygenAddDocumentation
+-----------------------
+
+Commands
+^^^^^^^^
+
+#]========================================================================]
+
 function(doxygen_add_documentation targetName)
     set(_options ALL USE_STAMP_FILE)
     set(_one_value_args WORKING_DIRECTORY COMMENT)
