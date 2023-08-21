@@ -20,6 +20,7 @@ Modules
     :hidden:
 
     prop_sf/GenerateDoxygen
+    prop_tgt/GenerateDoxygen
 
 Indices and tables
 ------------------
