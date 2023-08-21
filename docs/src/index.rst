@@ -16,6 +16,11 @@ Modules
     module/DoxygenAddDocumentation
     module/ExtendedDoxygen
 
+.. toctree::
+    :hidden:
+
+    prop_sf/GenerateDoxygen
+
 Indices and tables
 ------------------
 
