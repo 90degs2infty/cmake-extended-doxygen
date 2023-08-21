@@ -21,6 +21,7 @@ Modules
 
     prop_sf/GenerateDoxygen
     prop_tgt/GenerateDoxygen
+    variable/DoxygenGenerateDoxygen
 
 Indices and tables
 ------------------
