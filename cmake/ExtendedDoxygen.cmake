@@ -2,9 +2,22 @@
 ExtendedDoxygen
 ---------------
 
-Commands
-^^^^^^^^
+Collection of helper properties and functions to ease the generation of
+`Doxygen <https://doxygen.nl/>`_-based documentation from within ``cmake``.
 
+``include``-ing :module:`ExtendedDoxygen` will check for
+
+* `CMAKE_POLICY_DEFAULT_CMP0115 <https://cmake.org/cmake/help/latest/variable/CMAKE_POLICY_DEFAULT_CMPNNNN.html>`_
+* `CMP0115 <https://cmake.org/cmake/help/latest/policy/CMP0115.html>`_
+* `CMAKE_POLICY_DEFAULT_CMP0118 <https://cmake.org/cmake/help/latest/variable/CMAKE_POLICY_DEFAULT_CMPNNNN.html>`_
+* `CMP0118 <https://cmake.org/cmake/help/latest/policy/CMP0118.html>`_
+
+being set to ``NEW``.
+See :ref:`prerequisites` for a discussion on why.
+
+``include``-ing :module:`ExtendedDoxygen` transitively includes
+:module:`DoxygenAddDocumentation`, i.e. there is no need to include the latter by
+hand.
 #]========================================================================]
 
 # --------------------
@@ -46,11 +59,25 @@ endif()
 # this call to cmake_minimum_required has to stay below the above GETs.
 cmake_minimum_required(VERSION 3.25)
 
-# ---------------------------
-# Properties
-# ---------------------------
+#[========================================================================[.rst:
+Variables
+^^^^^^^^^
+
+``include``-ing :module:`ExtendedDoxygen` introduces the
+:variable:`DOXYGEN_GENERATE_DOXYGEN` variable.
+#]========================================================================]
 set(DOXYGEN_GENERATE_DOXYGEN OFF)
 
+#[========================================================================[.rst:
+Properties
+^^^^^^^^^^
+
+``include``-ing :module:`ExtendedDoxygen` introduces two custom properties.
+Targets introduced after the include will feature the
+:prop_tgt:`GENERATE_DOXYGEN` target property.
+Source files introduced after the include will feature the
+:prop_sf:`GENERATE_DOXYGEN` sourcefile property.
+#]========================================================================]
 define_property(
     TARGET
     PROPERTY GENERATE_DOXYGEN
@@ -66,19 +93,36 @@ define_property(
     # (see the INHERITED option at https://cmake.org/cmake/help/latest/command/define_property.html)
 )
 
-# ---------------
-# Helper to collect targets
-# ---------------
+#[========================================================================[.rst:
+Commands
+^^^^^^^^
+#]========================================================================]
 
-# collect_targets(VAR DIR)
-#
-# Recursively collects all targets defined in directory DIR
-# and stores the resulting list in variable VAR.
-#
-# Arguments:
-# - VAR: the output variable holding the list of targets
-# - DIR: the top-most directory to traverse, must be known to CMake
-#        subdirectories that are known to CMake get traversed recursively
+#[========================================================================[.rst:
+.. Hidden from output (internal helper)
+    .. command:: collect_targets
+
+        .. code-block:: cmake
+
+            collect_targets(
+                <returnVariable>
+                <rootDirectory>
+            )
+
+        Recursively collect all targets defined in directory ``<rootDirectory>``
+        and store the resulting list in variable ``<returnVariable>``.
+
+        ``<returnVariable>``
+            return variable that gets set in the caller's scope to hold the list of
+            collected targets
+
+        ``<rootDirectory>``
+            top-most directory to traverse
+
+            The specified directory must be known to ``cmake``, i.e. it has to have
+            been introduced via ``add_subdirectory`` previously.
+            Subdirectories that are known to ``cmake`` get traversed recursively.
+#]========================================================================]
 function(collect_targets var dir)
 
     # Do the heavy lifting
@@ -102,20 +146,33 @@ macro(collect_targets_recursive targets dir)
     list(APPEND ${targets} ${_current_targets})
 endmacro()
 
-# -------------------------------------
-# Helper to check for genexes in a path
-# -------------------------------------
+#[========================================================================[.rst:
+.. Hidden from output (internal helper)
+    .. command:: contains_genex
 
-# contains_genex(VAR SOURCE)
-#
-# Check if a given file path SOURCE contains generator expressions
-# and store the result in variable VAR.
-#
-# Arguments:
-# - VAR: the output variable holding the result of the check
-#        ON, iff SOURCE contains a genex
-#        OFF otherwise
-# - SOURCE: the file path to check
+        .. code-block:: cmake
+
+            contains_genex(
+                <returnVariable>
+                <filepath>
+            )
+
+        Check if the source file path ``<filepath>`` contains a generator expression
+        and store the result in ``<returnVariable>``
+
+        ``<returnVariable>``
+            return variable that gets set in the caller's scope to hold a boolean
+            indicating generator expressions
+
+            ``ON``
+                ``<filepath>`` contains a generator expression
+
+            ``OFF``
+                ``<filepath>`` does not contain a generator expression
+
+        ``<filepath>``
+            the source file path to check
+#]========================================================================]
 function(contains_genex var source)
 
     string(GENEX_STRIP "${source}" _no_genex)
@@ -127,27 +184,52 @@ function(contains_genex var source)
     endif()
 endfunction()
 
-# -------------------------------------------------------------
-# Helper to detect generated files specified via relative paths
-# -------------------------------------------------------------
+#[========================================================================[.rst:
+.. Hidden from output (internal helper)
+    .. command:: is_generated
 
-# is_generated(VAR SOURCE TARGET)
-#
-# Check if a given relative file path SOURCE refers to a
-# generated file and store the result in variable VAR.
-# The GENERATED source file property has to be visible from the
-# specified target TARGET's directory, see TARGET_DIRECTORY from
-# https://cmake.org/cmake/help/latest/command/get_source_file_property.html
-# for details.
-#
-# Arguments:
-# - VAR: the output variable holding the result of the check
-# - SOURCE: the file path to check - must be a relative path which is
-#           interpreted relative to the TARGET's binary directory
-# - TARGET: the target indicating the binary directory under which
-#           to look for SOURCE. The GENERATED source file property
-#           has to be visible from this target's directory, see the
-#           above.
+        .. code-block:: cmake
+
+            is_generated(
+                <returnVariable>
+                <filepath>
+                <target>
+            )
+
+        Check if the given relative file path ``<filepath>`` refers to a generated
+        file and store the result in ``<returnVariable>``.
+
+        .. note::
+            The source file's property ``GENERATED`` is evaluated in the specified
+            target ``<target>``'s directory.
+            I.e. the ``GENERATED`` source file property has to be visible from that
+            directory.
+            See
+            `get_source_file_property <https://cmake.org/cmake/help/latest/command/get_source_file_property.html>`_
+            for details.
+
+        ``<returnVariable>``
+            return variable that gets set in the caller's scope to hold the check's
+            result
+
+            ``ON``
+                ``<filepath>`` is generated
+
+            ``OFF``
+                ``<filepath>`` is not generated
+
+        ``<filepath>``
+            the source file path to check
+
+            ``<filepath>`` must be a relative path which is then evaluated relative
+            to ``<target>``'s binary directory.
+
+        ``<target>``
+            target indicating the binary directory to search for ``<filepath>``
+
+            The ``GENERATED`` source file property has to be visible from this
+            target's directory, see the above.
+#]========================================================================]
 function(is_generated var source target)
     get_target_property(_target_binary_dir ${target} BINARY_DIR)
 
@@ -168,26 +250,40 @@ function(is_generated var source target)
     set(${var} "${_generated}" PARENT_SCOPE)
 endfunction()
 
-# ------------------------------------
-# Helper to collect a target's sources
-# ------------------------------------
+#[========================================================================[.rst:
+.. Hidden from output (internal helper)
+    .. command:: collect_sources
 
-# collect_sources(VAR TARGET)
-#
-# Collects source files contributing to target TARGET in
-# variable VAR.
-#
-# Arguments:
-# - VAR:    the output variable holding the list of sources
-# - TARGET: the target to process
-#
-# For a discussion on this, see https://discourse.cmake.org/t/get-sources-of-target/4216/3
-# Also see https://cmake.org/cmake/help/latest/prop_tgt/SOURCES.html for a specification of
-# the types of paths that may arise as elements in SOURCES.
-#
-# Note that collecting source files is not easy, so consider below implementation
-# a draft approximation of correct behaviour. It works for basic use-cases, but it will
-# certainly break for more complex ones.
+        .. code-block:: cmake
+
+            collect_sources(
+                <returnVariable>
+                <target>
+            )
+
+        Store the list of source files contributing to target ``<target>`` in
+        ``<returnVariable>``.
+
+        .. note::
+            Collecting source files is not easy, so consider below implementation
+            a draft approximation of correct behaviour.
+            It works for basic use-cases, but it will certainly break for more
+            complex ones.
+
+        .. note::
+            For a discussion on this, see
+            `discourse <https://discourse.cmake.org/t/get-sources-of-target/4216/3>`_.
+            Also see `SOURCES <https://cmake.org/cmake/help/latest/prop_tgt/SOURCES.html>`_
+            for a specification of the types of paths that may arise as elements in
+            ``SOURCES``.
+
+        ``<returnVariable>``
+            return variable that gets set in the caller's scope to hold the list of
+            source files
+
+        ``<target>``
+            the target to evaluate
+#]========================================================================]
 function(collect_sources var target)
     list(APPEND CMAKE_MESSAGE_CONTEXT "collect_sources")
 
@@ -278,22 +374,49 @@ function(absolutify_source var source target)
     set(${var} "${_source_abs}" PARENT_SCOPE)
 endfunction()
 
-# -----------------------------------------
-# Helper to collect and include directories
-# -----------------------------------------
+#[========================================================================[.rst:
+.. command:: collect_doxygen_input
 
-# collect_doxygen_input(VAR_SOURCES VAR_INCLUDE_DIRS DIR)
-#
-# Recursively collect all doxygen-relevant source files and
-# include directories of targets defined at or below the
-# specified directory DIR.
-#
-# Arguments:
-# - VAR_SOURCES:      the output variable holding the list of sources that should be documented
-# - VAR_INCLUDE_DIRS: the output variable holding the list of include directories that should
-#                     be stripped by doxygen
-# - DIR:              the top-most directory to traverse, must be known to CMake
-#                     subdirectories that are known to CMake get traversed recursively
+    .. code-block:: cmake
+
+        collect_doxygen_input(
+            <returnVarSources>
+            <returnVarIncludes>
+            <rootDirectory>
+        )
+
+    Recursively collect all source files and include directories marked as input
+    to doxygen.
+
+    Collects all source files that contribute to some target defined at or below
+    directoy ``<rootDirectory>`` with the property :prop_tgt:`GENERATE_DOXYGEN`
+    enabled.
+    For source file level exclusion of certain files, also see the source file
+    property :prop_sf:`GENERATE_DOXYGEN`.
+
+    Additionally, all include directories annotated to targets get collected.
+    Here, the list of include directories is populated from the iterated
+    targets' property `INTERFACE_INCLUDE_DIRECTORIES <https://cmake.org/cmake/help/latest/prop_tgt/INTERFACE_INCLUDE_DIRECTORIES.html>`_.
+
+    .. note::
+        There is no way of excluding certain include directories as there
+        is for source files (yet).
+
+    ``<returnVarSources>``
+        return variable that gets set in the caller's scope to hold the list of
+        source files acting as input to ``doxygen``
+
+    ``<returnVarIncludes>``
+        return variable that gets set in the caller's scope to hold the list of
+        include directories
+
+    ``<rootDirectory>``
+        top-most directory to traverse
+
+        The specified directory must be known to ``cmake``, i.e. it has to have
+        been introduced via ``add_subdirectory`` previously.
+        Subdirectories that are known to ``cmake`` get traversed recursively.
+#]========================================================================]
 function(collect_doxygen_input var_sources var_include_dirs dir)
 
     # Implementation note: for relative paths to work, I might have to switch the order of doing stuff below:
