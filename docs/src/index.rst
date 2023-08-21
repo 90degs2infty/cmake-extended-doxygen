@@ -6,6 +6,13 @@ cmake-extended-doxygen
 Getting started
 ---------------
 
+.. toctree::
+    :hidden:
+
+    getting_started
+
+Please follow :ref:`getting-started`.
+
 Modules
 -------
 
