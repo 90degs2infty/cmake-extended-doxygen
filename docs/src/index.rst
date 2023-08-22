@@ -12,8 +12,8 @@ Apart from the maintainance overhead, this also leads to redundancies: after all
 To automate the process of collecting ``doxygen``'s input, this repository ships
 
 * the custom target property :prop_tgt:`GENERATE_DOXYGEN` alongside its source file equivalent :prop_sf:`GENERATE_DOXYGEN` to control which source files go into documentation,
-* a function :command:`collect_doxygen_input` to automatically populate the list of sources and include directories passed to ``doxygen`` and
-* a close-to-drop-in-replacement :command:`doxygen_add_documentation` replacing ``doxygen_add_docs``
+* the function :command:`collect_doxygen_input` to automatically populate the list of sources and include directories passed to ``doxygen`` and
+* the function :command:`doxygen_add_documentation` replacing ``doxygen_add_docs`` (it's almost a drop-in-replacement).
 
 Getting started
 ---------------
