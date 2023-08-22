@@ -50,3 +50,4 @@ html_theme_options = {
 html_title = '%s Documentation' % project
 html_short_title = '%s Documentation' % project
 html_static_path = ['@_sphinx_static_dir@']
+html_baseurl = 'https://90degs2infty.github.io/cmake-extended-doxygen'
