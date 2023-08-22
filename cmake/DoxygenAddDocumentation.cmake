@@ -44,6 +44,87 @@
 # https://gitlab.kitware.com/cmake/cmake/raw/master/Copyright.txt as
 # well as https://cmake.org/licensing.
 
+#[========================================================================[.rst:
+DoxygenAddDocumentation
+-----------------------
+
+.. note::
+    :module:`DoxygenAddDocumentation` is transitively included by
+    :module:`ExtendedDoxygen`.
+    Typically, there is little need to include the present module by hand.
+
+.. note::
+    Since this module is heavily based on code distributed by Kitware, please
+    find the original code's license text in the
+    :download:`sourcecode <../../../cmake/DoxygenAddDocumentation.cmake>`.
+
+Commands
+^^^^^^^^
+
+#]========================================================================]
+
+#[========================================================================[.rst:
+.. command:: doxygen_add_documentation
+
+    .. code-block:: cmake
+
+        doxygen_add_docs(
+            targetName
+            [filesOrDirs...]
+            [ALL]
+            [USE_STAMP_FILE]
+            [WORKING_DIRECTORY dir]
+            [COMMENT comment]
+            [DEDICATED_SOURCES files...]
+        )
+
+    Set up a target to drive generation of ``doxygen``-based documentation.
+
+    .. note::
+        :command:`doxygen_add_documentation` is intended as drop-in-replacement for
+        `doxygen_add_docs <https://cmake.org/cmake/help/latest/module/FindDoxygen.html#command:doxygen_add_docs>`_
+        (at least as far as possible).
+        For general advice on how to use :command:`doxygen_add_documentation`,
+        please consult
+        `doxygen_add_docs' documentation <https://cmake.org/cmake/help/latest/module/FindDoxygen.html#command:doxygen_add_docs>`_.
+
+        :command:`doxygen_add_documentation` differs from ``doxygen_add_docs`` in
+        the following ways:
+
+        * The ``Doxyfile`` configuration file is created at generation time (in
+          contrast to at configure time) to allow for substitution of
+          `generator expressions <https://cmake.org/cmake/help/latest/manual/cmake-generator-expressions.7.html)>`_.
+          This is needed to allow for generator expressions in source file paths as
+          well as include directories.
+        * Sources specified as positional arguments do not get passed as
+          `SOURCES <https://cmake.org/cmake/help/latest/command/add_custom_target.html>`_
+          argument to the constructed custom target.
+          Sources specified as positional arguments are considered to be part of
+          some other target, hence they do not get passed on.
+          To explicitly pass sources to the constructed custom target, consider
+          using the additional keyword argument ``DEDICATED_SOURCES``.
+        * An additional keyword argument ``DEDICATED_SOURCES`` is supported.
+          See below for details.
+
+    ``DEDICATED_SOURCES files...``
+        list of sources dedicated at the constructed custom target itself
+
+        Sources passed by means of ``DEDICATED_SOURCES`` (in contrast to being
+        passed as positional arguments) get passed on to the constructed
+        custom target as
+        `SOURCES <https://cmake.org/cmake/help/latest/command/add_custom_target.html>`_.
+        A common use-case is to specify some ``README.md``, which does not
+        contribute to the general code base but gets passed to ``doxygen`` via
+        its ``DOXYGEN_USE_MDFILE_AS_MAINPAGE`` option.
+        Passing such files via ``DEDICATED_SOURCES`` makes them show up in IDEs.
+
+        .. note::
+            Do not use ``DEDICATED_SOURCES`` to pass source files
+            (e.g. ``C/C++`` files) which are part of another target.
+            Such files should be passed as positional arguments in
+            ``filesOrDirs...``.
+
+#]========================================================================]
 function(doxygen_add_documentation targetName)
     set(_options ALL USE_STAMP_FILE)
     set(_one_value_args WORKING_DIRECTORY COMMENT)

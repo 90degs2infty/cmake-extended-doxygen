@@ -1,0 +1,53 @@
+# Configuration file for the Sphinx documentation builder.
+#
+# For the full list of built-in configuration values, see the documentation:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
+
+# -- Project information -----------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+
+project = 'cmake-extended-doxygen'
+copyright = '2023, 90degs2infty'
+author = '90degs2infty'
+release = '@_sphinx_ced_release@'
+
+# -- General configuration ---------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+primary_domain = 'cmake'
+
+extensions = [
+    'sphinxcontrib.moderncmakedomain' # https://github.com/scikit-build/moderncmakedomain
+]
+
+templates_path = ['@_sphinx_template_dir@']
+exclude_patterns = []
+
+# -- Options for HTML output -------------------------------------------------
+# https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
+
+html_theme = '@_sphinx_theme@'
+html_theme_path = ['@_sphinx_theme_dir@']
+html_theme_options = {
+    'footerbgcolor':    '#00182d',
+    'footertextcolor':  '#ffffff',
+    'sidebarbgcolor':   '#e4ece8',
+    'sidebarbtncolor':  '#00a94f',
+    'sidebartextcolor': '#333333',
+    'sidebarlinkcolor': '#00a94f',
+    'relbarbgcolor':    '#00529b',
+    'relbartextcolor':  '#ffffff',
+    'relbarlinkcolor':  '#ffffff',
+    'bgcolor':          '#ffffff',
+    'textcolor':        '#444444',
+    'headbgcolor':      '#f2f2f2',
+    'headtextcolor':    '#003564',
+    'headlinkcolor':    '#3d8ff2',
+    'linkcolor':        '#2b63a8',
+    'visitedlinkcolor': '#2b63a8',
+    'codebgcolor':      '#eeeeee',
+    'codetextcolor':    '#333333',
+}
+html_title = '%s Documentation' % project
+html_short_title = '%s Documentation' % project
+html_static_path = ['@_sphinx_static_dir@']
+html_baseurl = 'https://90degs2infty.github.io/cmake-extended-doxygen'

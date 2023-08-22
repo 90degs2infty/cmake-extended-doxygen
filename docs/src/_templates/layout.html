@@ -1,0 +1,14 @@
+{% extends "!layout.html" %}
+{% block footer %}
+    <div class="footer" role="contentinfo" style="display: flex;">
+        <div style="flex:1 1 0px;padding: 0px 10px;text-align: left;">
+            {{ project }} - {{ release }}
+        </div>
+        <div style="flex:1 1 0px;padding: 0px 10px;text-align: center;">
+            &#169; {{ copyright }}
+        </div>
+        <div style="flex:1 1 0px;padding: 0px 10px;text-align: right;">
+            Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> {{ sphinx_version }}
+        </div>
+    </div>
+{% endblock %}
