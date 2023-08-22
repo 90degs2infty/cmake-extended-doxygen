@@ -46,6 +46,8 @@ jobs:
         id: pages
         uses: actions/configure-pages@v3
       - run: cd $GITHUB_WORKSPACE/cmake-extended-doxygen
+      - run: pwd
+      - run: ls
       - name: Configure build system
         run: bash -x tools/configure.sh
       - name: Build documentation
