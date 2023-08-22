@@ -16,3 +16,7 @@
 -- [the docs](https://90degs2infty.github.io/cmake-extended-doxygen/index.html)
 
 For details on using this repository (alongside a [Getting Started guide](https://90degs2infty.github.io/cmake-extended-doxygen/getting_started.html)), please head over to [GitHub Pages](https://90degs2infty.github.io/cmake-extended-doxygen/index.html).
+
+## License
+
+Licensed under [BSD 3-Clause License](LICENSE.md).
