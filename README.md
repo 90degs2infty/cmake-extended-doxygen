@@ -9,10 +9,10 @@
 >
 > To automate the process of collecting `doxygen`'s input, this repository ships
 >
-> - the custom target property [`GENERATE_DOXYGEN`]() alongside its source file equivalent [`GENERATE_DOXYGEN`]() to control which source files go into documentation,
-> - the function [`collect_doxygen_input`]() to automatically populate the list of sources and include directories passed to `doxygen` and
-> - the function [`doxygen_add_documentation`]() replacing `doxygen_add_docs` (it’s almost a drop-in-replacement).
+> - the custom target property [`GENERATE_DOXYGEN`](https://90degs2infty.github.io/cmake-extended-doxygen/prop_tgt/GenerateDoxygen.html#prop_tgt:GENERATE_DOXYGEN) alongside its source file equivalent [`GENERATE_DOXYGEN`](https://90degs2infty.github.io/cmake-extended-doxygen/prop_sf/GenerateDoxygen.html#prop_sf:GENERATE_DOXYGEN) to control which source files go into documentation,
+> - the function [`collect_doxygen_input`](https://90degs2infty.github.io/cmake-extended-doxygen/module/ExtendedDoxygen.html#command:collect_doxygen_input) to automatically populate the list of sources and include directories passed to `doxygen` and
+> - the function [`doxygen_add_documentation`](https://90degs2infty.github.io/cmake-extended-doxygen/module/DoxygenAddDocumentation.html#command:doxygen_add_documentation) replacing `doxygen_add_docs` (it’s almost a drop-in-replacement).
 
--- [the docs]()
+-- [the docs](https://90degs2infty.github.io/cmake-extended-doxygen/index.html)
 
-For details on using this repository (alongside a [Getting Started guide]()), please head over to [GitHub Pages]().
+For details on using this repository (alongside a [Getting Started guide](https://90degs2infty.github.io/cmake-extended-doxygen/getting_started.html)), please head over to [GitHub Pages](https://90degs2infty.github.io/cmake-extended-doxygen/index.html).
