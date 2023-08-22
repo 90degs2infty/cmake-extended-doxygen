@@ -77,3 +77,8 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
+
+License
+-------
+
+Licensed under `BSD 3-Clause License <https://github.com/90degs2infty/cmake-extended-doxygen/blob/main/LICENSE.md>`_.
