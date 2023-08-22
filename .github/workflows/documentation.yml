@@ -28,8 +28,6 @@ jobs:
     steps:
       - name: Get sources
         uses: actions/checkout@v3
-        with:
-          path: 'cmake-extended-doxygen'
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
