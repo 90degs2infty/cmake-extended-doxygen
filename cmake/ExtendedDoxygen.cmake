@@ -419,6 +419,19 @@ endfunction()
 #]========================================================================]
 function(collect_doxygen_input var_sources var_include_dirs dir)
 
+    # Implementation note: the algorithm in here basically is the following:
+    # 1: For all targets defined at or below the specified directory...
+    # 2:   ...check, if the `GENERATE_DOCUMENTATION` property evaluates to
+    #      `TRUE`
+    # 3:     If yes: For all source files contained in the target's `SOURCE`
+    #        property...
+    # 4:       ...check, if there is an overriding `GENERATE_DOCUMENTATION`
+    #          property evaluating to `FALSE`
+    # 5:         If no: add the source file to the list of all source files
+    # 6:       ...add all directories contained in the target's
+    #          `INTERFACE_INCLUDE_DIRECTORIES` to the list of all include
+    #          directories
+
     # Implementation note: for relative paths to work, I might have to switch the order of doing stuff below:
     # Loop over targets
     # Loop over targets' sources
