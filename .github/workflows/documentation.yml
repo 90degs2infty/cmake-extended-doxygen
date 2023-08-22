@@ -34,7 +34,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip' # caching pip dependencies
       - name: Install Python dependencies
-        run: pip install -r $GITHUB_WORKSPACE/cmake-extended-doxygen/tools/requirements.txt
+        run: pip install -r tools/requirements.txt
       - name: Setup CMake and Ninja
         uses: lukka/get-cmake@latest
         with:
@@ -43,9 +43,6 @@ jobs:
       - name: Setup GitHub Pages
         id: pages
         uses: actions/configure-pages@v3
-      - run: cd $GITHUB_WORKSPACE/cmake-extended-doxygen
-      - run: pwd
-      - run: ls
       - name: Configure build system
         run: bash -x tools/configure.sh
       - name: Build documentation
