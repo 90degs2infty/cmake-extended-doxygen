@@ -10,6 +10,7 @@ project(
     cmake-extended-doxygen
     VERSION 0.1.1
     DESCRIPTION "A target-based integration of Doxygen into CMake"
+    LANGUAGES NONE
 )
 
 # Only add documenation option if explicitly asked to do so (via
